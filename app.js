@@ -1,8 +1,9 @@
 const express = require('express');
 const mongoose = require('mongoose');
+const helmet = require('helmet');
 
-const { PORT, BD_URL } = require('./utils/config');
-const limiter = require('./utils/limiter-config');
+const { PORT, BD_URL } = require('./configs');
+const limiter = require('./configs/limiter-config');
 
 const app = express();
 mongoose.connect(BD_URL, {
@@ -10,5 +11,8 @@ mongoose.connect(BD_URL, {
 });
 
 app.use(limiter);
+app.use(helmet());
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 
 app.listen(PORT);
