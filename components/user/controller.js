@@ -1,7 +1,7 @@
 const mongooseError = require('mongoose').Error;
 
 const User = require('./model');
-const { NotFoundError, BadRequestError, ConflictError } = require('../../errors');
+const { NotFoundError, ConflictError } = require('../../errors');
 const { generateHash, generateToken, handleMongooseValidationError } = require('../../utils');
 const { CREATED_201 } = require('../../utils/constants');
 const { cookieTokenOpt } = require('../../configs/cookie-options');
@@ -78,9 +78,18 @@ async function signIn(req, res, next) {
   }
 }
 
+function signOut(_, res, next) {
+  try {
+    res.clearCookie('token', cookieTokenOpt).send({ message: 'Вы вышли из аккаунта' });
+  } catch (err) {
+    next(err);
+  }
+}
+
 module.exports = {
   getUser,
   updateUser,
   createUser,
   signIn,
+  signOut,
 };
