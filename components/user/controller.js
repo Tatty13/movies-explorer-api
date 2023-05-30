@@ -2,8 +2,9 @@ const mongooseError = require('mongoose').Error;
 
 const User = require('./model');
 const { NotFoundError, BadRequestError } = require('../../errors');
-const { generateHash } = require('../../utils');
+const { generateHash, generateToken, handleMongooseValidationError } = require('../../utils');
 const { CREATED_201 } = require('../../utils/constants');
+const { cookieTokenOpt } = require('../../configs/cookie-options');
 
 async function getUser(req, res, next) {
   const { _id } = req.user;
@@ -32,8 +33,7 @@ async function updateUser(req, res, next) {
     res.send(user);
   } catch (err) {
     if (err instanceof mongooseError.ValidationError) {
-      const message = Object.values(err.errors).map((e) => e.message).join('. ');
-      next(new BadRequestError(message));
+      handleMongooseValidationError(err, next);
       return;
     }
     next(err);
@@ -52,8 +52,27 @@ async function createUser(req, res, next) {
   }
 }
 
+async function signIn(req, res, next) {
+  const { email, password } = req.body;
+  try {
+    const { _id } = await User.findUserByCredentials(email, password);
+    const token = generateToken({ _id });
+
+    res
+      .cookie('token', token, cookieTokenOpt)
+      .send({ message: 'Авторизация прошла успешно' });
+  } catch (err) {
+    if (err instanceof mongooseError.ValidationError) {
+      handleMongooseValidationError(err, next);
+      return;
+    }
+    next(err);
+  }
+}
+
 module.exports = {
   getUser,
   updateUser,
   createUser,
+  signIn,
 };
