@@ -1,6 +1,7 @@
 const isUrl = require('./is-url');
 const handleMongooseValidationError = require('./handle-mongoose-validation-error');
 const handleMongooseCastError = require('./handle-mongoose-cast-error');
+const findUserByCredentials = require('./find-user-by-credentials');
 const { generateHash, checkPassword } = require('./hash');
 
 module.exports = {
@@ -9,4 +10,5 @@ module.exports = {
   handleMongooseCastError,
   generateHash,
   checkPassword,
+  findUserByCredentials,
 };

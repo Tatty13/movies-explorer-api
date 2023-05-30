@@ -1,6 +1,7 @@
 const mongoose = require('mongoose');
 
 const { emailPattern } = require('../../utils/patterns');
+const { findUserByCredentials } = require('../../utils');
 
 mongoose.set('toObject', { useProjection: true });
 mongoose.set('toJSON', { useProjection: true });
@@ -27,5 +28,7 @@ const userSchema = new mongoose.Schema({
     maxlength: [30, 'Длина имени не должна превышать 30 символов'],
   },
 });
+
+userSchema.statics = { findUserByCredentials };
 
 module.exports = mongoose.model('user', userSchema);
