@@ -1,7 +1,7 @@
 const mongooseError = require('mongoose').Error;
 
 const User = require('./model');
-const { NotFoundError, BadRequestError } = require('../../errors');
+const { NotFoundError, BadRequestError, ConflictError } = require('../../errors');
 const { generateHash, generateToken, handleMongooseValidationError } = require('../../utils');
 const { CREATED_201 } = require('../../utils/constants');
 const { cookieTokenOpt } = require('../../configs/cookie-options');
@@ -48,6 +48,14 @@ async function createUser(req, res, next) {
 
     res.status(CREATED_201).send({ user });
   } catch (err) {
+    if (err.code === 11000) {
+      next(new ConflictError('Пользователь с указанным email уже существует'));
+      return;
+    }
+    if (err instanceof mongooseError.ValidationError) {
+      handleMongooseValidationError(err, next);
+      return;
+    }
     next(err);
   }
 }
