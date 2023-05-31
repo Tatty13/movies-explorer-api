@@ -9,7 +9,7 @@ const { PORT, BD_URL } = require('./configs');
 const limiter = require('./configs/limiter-config');
 const router = require('./routes');
 const {
-  handleError, requestLogger, errorLogger, handleCors,
+  handleError, requestLogger, errorLogger, handleCors, handleCelebrateErrors,
 } = require('./middlewares');
 
 const app = express();
@@ -27,6 +27,8 @@ app.use(requestLogger);
 app.use(handleCors);
 app.use(router);
 app.use(errorLogger);
+
+app.use(handleCelebrateErrors);
 app.use(handleError);
 
 app.listen(PORT);
