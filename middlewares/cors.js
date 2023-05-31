@@ -1,4 +1,6 @@
 const allowedCors = [
+  'http://allmovies.nomoredomains.rocks',
+  'https://allmovies.nomoredomains.rocks',
   'http://localhost:3000',
   'http://localhost:3001',
 ];
