@@ -1,3 +1,5 @@
+require('dotenv').config();
+
 const express = require('express');
 const mongoose = require('mongoose');
 const helmet = require('helmet');
@@ -7,6 +9,7 @@ const { PORT, BD_URL } = require('./configs');
 const limiter = require('./configs/limiter-config');
 const router = require('./routes');
 const handleError = require('./middlewares.js/handleError');
+const { requestLogger, errorLogger } = require('./middlewares.js');
 
 const app = express();
 mongoose.connect(BD_URL, {
@@ -19,7 +22,9 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 
+app.use(requestLogger);
 app.use(router);
+app.use(errorLogger);
 app.use(handleError);
 
 app.listen(PORT);
