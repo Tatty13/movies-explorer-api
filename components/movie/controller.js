@@ -5,9 +5,10 @@ const { CREATED_201 } = require('../../utils/constants');
 const { handleMongooseValidationError, handleMongooseCastError } = require('../../utils');
 const { NotFoundError, ForbiddenError } = require('../../errors');
 
-async function getMovies(_, res, next) {
+async function getMovies(req, res, next) {
+  const owner = req.user._id;
   try {
-    const movies = await Movie.find({});
+    const movies = await Movie.find({ owner });
     res.send(movies);
   } catch (err) {
     next(err);
@@ -15,9 +16,9 @@ async function getMovies(_, res, next) {
 }
 
 async function createMovie(req, res, next) {
-  const { _id } = req.user;
+  const owner = req.user._id;
   try {
-    const movie = await Movie.create({ ...req.body, owner: _id });
+    const movie = await Movie.create({ ...req.body, owner });
     res.status(CREATED_201).send(movie);
   } catch (err) {
     if (err instanceof mongooseError.ValidationError) {
