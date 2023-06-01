@@ -32,6 +32,10 @@ async function updateUser(req, res, next) {
 
     res.send(user);
   } catch (err) {
+    if (err.code === 11000) {
+      next(new ConflictError('Пользователь с указанным email уже существует'));
+      return;
+    }
     if (err instanceof mongooseError.ValidationError) {
       handleMongooseValidationError(err, next);
       return;
