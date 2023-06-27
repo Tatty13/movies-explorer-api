@@ -6,6 +6,8 @@ IP 84.201.177.225
 
 Backend <https://api.allmovies.nomoredomains.rocks>
 
+Frontend <https://github.com/Tatty13/movies-explorer-frontend>
+
 ---
 
 ## IMPORTANT
